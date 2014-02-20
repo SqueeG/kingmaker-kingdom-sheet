@@ -1,79 +1,359 @@
-<!DOCTYPE html>
 <html>
+<head>
+    <title>Kingdom worksheet</title>
+    <link rel="stylesheet" type="text/css" href="kingdom.css" />
+    <script language="javascript" src="jquery-1.7.2.min.js"></script>
+    <script language="javascript" src="kingdom.js"></script>
+</head>
+<body>
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Kingmaker-kingdom-sheet : A javascript-based interactive worksheet for kingdoms in the Pathfinder Kingmaker adventure path.  I was just keeping a local git repo on my laptop, but it became corrupted, so now I want an off-site backup.  If it&#39;s of any interest to anyone else, all the better." />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Kingmaker-kingdom-sheet</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/SqueeG/kingmaker-kingdom-sheet">View on GitHub</a>
-
-          <h1 id="project_title">Kingmaker-kingdom-sheet</h1>
-          <h2 id="project_tagline">A javascript-based interactive worksheet for kingdoms in the Pathfinder Kingmaker adventure path.  I was just keeping a local git repo on my laptop, but it became corrupted, so now I want an off-site backup.  If it&#39;s of any interest to anyone else, all the better.</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/SqueeG/kingmaker-kingdom-sheet/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/SqueeG/kingmaker-kingdom-sheet/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+    <div id="menu">Menu</div>
+    <div id="menuDiv">
+	<span>Switch to kingdom:</span>
+	<div id="kingdomList"></div>
+	<hr/>
+	<a href="#" id="menuNewKingdom">Create New Kingdom</a><br/>
+	<a href="#" id="menuImportExport">Import/Export Kingdom</a>
+    </div>
+    <div id="importExportDiv">
+	<p>Copy and paste into and out of this text area to export the current kingdom or import a new or existing kingdom</p>
+	<textarea name="importExportArea">
+	</textarea><br/>
+	<button id="importExportClose">Close</button>
+	<button id="importButton">Import above kingdom data</button>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+    <span class="calendar"><span id="calendar">Calendar</span><button id="calendarMinus">-</button><button id="calendarPlus">+</button></span>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+    <h1><span id="kingdomType">Barony</span> of <span id="kingdomName"></span><h1>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+    <div class="summary">
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+	<table class="blue">
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+	    <tr>
+		<th>Alignment</th>
+		<td>
+		    <select name="Alignment">
+			<option></option>
+			<option>Lawful Good</option>
+			<option>Neutral Good</option>
+			<option>Chaotic Good</option>
+			<option>Lawful Neutral</option>
+			<option>True Neutral</option>
+			<option>Chaotic Neutral</option>
+			<option>Lawful Evil</option>
+			<option>Neutral Evil</option>
+			<option>Chaotic Evil</option>
+		    </select>
+		</td>
+	    </tr>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+	    <tr>
+		<th>Size</th>
+		<td><input type="text" name="size" value="1" size="4" /></td>
+	    </tr>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+	    <tr>
+		<th>Roads</th>
+		<td><select name="roads"></select></td>
+	    </tr>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+	    <tr>
+		<th>Farms</th>
+		<td><select name="farms"></select></td>
+	    </tr>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+	    <tr>
+		<th>Unrest</th>
+		<td><input type="text" name="unrest" value="0" size="1" /> (<span class="fromKingdom UnrestRate plusNumber"></span> each month)</td>
+	    </tr>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+	    <tr>
+		<th>Treasury</th>
+		<td><input type="text" name="treasury" value="0" size="4" /> BP</td>
+	    </tr>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+	</table>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Kingmaker-kingdom-sheet maintained by <a href="https://github.com/SqueeG">SqueeG</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
+    <div class="edicts">
+
+	<table class="blue">
+
+	    <tr>
+		<th>Control DC</th>
+		<td class="fromKingdom ControlDC"></td>
+	    </tr>
+
+	    <tr>
+		<th>Population</th>
+		<td><span class="fromKingdom Population number"></span> (<span class="fromKingdom City_Population number"></span> urban, <span class="fromKingdom Rural_Population number"></span> rural)</td>
+	    </tr>
+
+	    <tr>
+		<th>Consumption</th>
+		<td class="fromKingdom Consumption number"></td>
+	    </tr>
+
+	</table>
+
+	<table class="blue">
+
+	    <thead>
+
+		<tr>
+		    <th>Edicts</th>
+		    <th>Choice</th>
+		    <th>Economy</th>
+		    <th>Loyalty</th>
+		    <th>Stability</th>
+		    <th>Consumption</th>
+		</tr>
+
+	    </thead>
+
+	    <tbody>
+
+		<tr>
+		    <th>Promotions</th>
+		    <td>
+			<select name="Promotions">
+			    <option>None</option>
+			    <option>Token</option>
+			    <option>Standard</option>
+			    <option>Aggressive</option>
+			    <option>Expansionist</option>
+			</select>
+		    </td>
+		    <td></td>
+		    <td></td>
+		    <td class="fromKingdom Edicts_Stability"></td>
+		    <td class="fromKingdom Promotions_Consumption"></td>
+		</tr>
+
+		<tr>
+		    <th>Taxation Level</th>
+		    <td>
+			<select name="Taxation">
+			    <option>None</option>
+			    <option>Light</option>
+			    <option>Normal</option>
+			    <option>Heavy</option>
+			    <option>Overwhelming</option>
+			</select>
+		    </td>
+		    <td class="fromKingdom Edicts_Economy"></td>
+		    <td class="fromKingdom Taxation_Loyalty"></td>
+		    <td></td>
+		    <td></td>
+		</tr>
+
+		<tr>
+		    <th>Festivals per year</th>
+		    <td>
+			<select name="Festivals">
+			    <option>None</option>
+			    <option>1 per year</option>
+			    <option>6 per year</option>
+			    <option>12 per year</option>
+			    <option>23 per year</option>
+			</select>
+		    </td>
+		    <td></td>
+		    <td class="fromKingdom Festivals_Loyalty"></td>
+		    <td></td>
+		    <td class="fromKingdom Festivals_Consumption"></td>
+		</tr>
+
+	    </tbody>
+
+	</table>
+
     </div>
 
-    
 
-  </body>
+    <table class="blue">
+
+	<tr>
+	    <th>&nbsp;</th>
+	    <th>Total</th>
+	    <th>Buildings</th>
+	    <th>Edicts</th>
+	    <th>Events</th>
+	    <th>Leadership</th>
+	    <th>Resources</th>
+	    <th>Alignment</th>
+	    <th>Roads</th>
+	    <th>Other</th>
+	    <th>Edicts</th>
+	    <th>Unrest</th>
+	    <th>Vacancies</th>
+	    <th>Other</th>
+	</tr>
+
+	<tr>
+	    <th>Economy</th>
+	    <td class="fromKingdom Economy"></td>
+	    <td class="fromKingdom Buildings_Economy"></td>
+	    <td class="fromKingdom Edicts_Economy_Plus"></td>
+	    <td class="fromKingdom Events_Economy"></td>
+	    <td class="fromKingdom Leadership_Economy"></td>
+	    <td class="fromKingdom Resources_Economy"></td>
+	    <td class="fromKingdom Alignment_Economy"></td>
+	    <td class="fromKingdom Roads_Economy"></td>
+	    <td class="fromKingdom Other_Economy_Plus"></td>
+	    <td class="fromKingdom Edicts_Economy_Minus"></td>
+	    <td class="fromKingdom Unrest_Economy_Minus"></td>
+	    <td class="fromKingdom Vacancies_Economy_Minus"></td>
+	    <td class="fromKingdom Other_Economy_Minus"></td>
+	</tr>
+
+	<tr>
+	    <th>Loyalty</th>
+	    <td class="fromKingdom Loyalty"></td>
+	    <td class="fromKingdom Buildings_Loyalty"></td>
+	    <td class="fromKingdom Edicts_Loyalty_Plus"></td>
+	    <td class="fromKingdom Events_Loyalty"></td>
+	    <td class="fromKingdom Leadership_Loyalty"></td>
+	    <td class="fromKingdom Resources_Loyalty"></td>
+	    <td class="fromKingdom Alignment_Loyalty"></td>
+	    <td class="fromKingdom Roads_Loyalty"></td>
+	    <td class="fromKingdom Other_Loyalty_Plus"></td>
+	    <td class="fromKingdom Edicts_Loyalty_Minus"></td>
+	    <td class="fromKingdom Unrest_Loyalty_Minus"></td>
+	    <td class="fromKingdom Vacancies_Loyalty_Minus"></td>
+	    <td class="fromKingdom Other_Loyalty_Minus"></td>
+	</tr>
+
+	<tr>
+	    <th>Stability</th>
+	    <td class="fromKingdom Stability"></td>
+	    <td class="fromKingdom Buildings_Stability"></td>
+	    <td class="fromKingdom Edicts_Stability_Plus"></td>
+	    <td class="fromKingdom Events_Stability"></td>
+	    <td class="fromKingdom Leadership_Stability"></td>
+	    <td class="fromKingdom Resources_Stability"></td>
+	    <td class="fromKingdom Alignment_Stability"></td>
+	    <td class="fromKingdom Roads_Stability"></td>
+	    <td class="fromKingdom Other_Stability_Plus"></td>
+	    <td class="fromKingdom Edicts_Stability_Minus"></td>
+	    <td class="fromKingdom Unrest_Stability_Minus"></td>
+	    <td class="fromKingdom Vacancies_Stability_Minus"></td>
+	    <td class="fromKingdom Other_Stability_Minus"></td>
+	</tr>
+
+    </table>
+
+    <table class="blue">
+
+	<tr>
+	    <th>&nbsp;</th>
+	    <th>New Cities</th>
+	    <th>New Buildings</th>
+	    <th>Claim Hexes (1 BP)</th>
+	    <th title="Plains and Hills 1 BP, Forests 2 BP, Swamps and Mountains 4 BP, double to cross a river without an existing bridge or ford">Build Roads (1/2/4/8 BP)</th>
+	    <th title="Plains 2 BP, Hills 4 BP">Build Farmlands (2/4 BP)</th>
+	</tr>
+
+	<tr>
+	    <th>Build Limits (per month)</th>
+	    <td class="fromKingdom limitCities"></td>
+	    <td><span class="fromKingdom limitBuildings"></span> (+1 house)</td>
+	    <td class="fromKingdom limitHexes"></td>
+	    <td class="fromKingdom limitRoads"></td>
+	    <td class="fromKingdom limitFarmlands"></td>
+	</tr>
+
+    </table>
+
+    <h1>Leadership Positions <span class="expando">[+]</span></h1>
+
+    <table class="blue leaders">
+
+	<thead>
+	    <tr>
+		<th>Position</th>
+		<th>Who</th>
+		<th>Ability</th>
+		<th>Affecting</th>
+		<th>Penalty if Vacant</th>
+	    </tr>
+	</thead>
+
+	<tbody></tbody>
+
+    </table>
+
+    <h1>People <span class="expando">[+]</span></h1>
+
+    <div>
+
+	<table class="blue people">
+
+	    <thead>
+
+		<tr>
+		    <th>Name</th>
+		    <th>Strength</th>
+		    <th>Dexterity</th>
+		    <th>Constitution</th>
+		    <th>Intelligence</th>
+		    <th>Wisdom</th>
+		    <th>Charisma</th>
+		</tr>
+
+	    </thead>
+
+	    <tbody>
+
+	    </tbody>
+
+	</table>
+
+	<input type="button" value="Add person" id="addPersonButton" />
+
+    </div>
+
+    <h1>Cities <span class="expando">[+]</span></h1>
+
+    <div>
+
+	<input type="button" value="Fill all vacant item slots" id="fillItemSlots" />
+
+	<div id="citiesDiv"></div>
+
+	<div id="buildSelect"></div>
+
+	<input type="button" value="Add new city" id="addCityButton" />
+
+    </div>
+
+    <h1>Other Resources <span class="expando">[+]</span></h1>
+
+    <div>
+
+	<table class="blue resources">
+
+	    <thead>
+
+		<tr>
+		    <th>Description</th>
+		    <th>Economy</th>
+		    <th>Loyalty</th>
+		    <th>Stability</th>
+		</tr>
+
+	    </thead>
+
+	    <tbody>
+
+	    </tbody>
+
+	</table>
+
+	<input type="button" value="Add Resource" id="addResourceButton" />
+
+</body>
 </html>
